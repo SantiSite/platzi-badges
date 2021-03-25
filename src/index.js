@@ -10,6 +10,8 @@ import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css'
 import Badge from "./components/Badge";
 
+import './global.css';
+
 // const element = <h1>Hello Platzi Badges</h1>
 // const element = React.createElement('a', { href: 'http://Platzi.com'}, 'Platzi');
 
@@ -20,12 +22,12 @@ import Badge from "./components/Badge";
 // const ages = () => (20 + 2);
 // const element = <h1>Hello, I am from {city} and I am {ages()} years old.</h1>;
 
-const jsx = (
-    <div>
-        <h1>Soy Ingeniero Industrial.</h1>
-        <p>Apasionado por la programación</p>
-    </div>
-)
+// const jsx = (
+//     <div>
+//         <h1>Soy Ingeniero Industrial.</h1>
+//         <p>Apasionado por la programación</p>
+//     </div>
+// )
 
 // const element = React.createElement(
 //     'div',
