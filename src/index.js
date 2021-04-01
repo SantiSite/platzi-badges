@@ -8,7 +8,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css'
-import Badge from "./components/Badge";
+import BadgeNew from "./pages/BadgesNew";
 
 import './global.css';
 
@@ -39,4 +39,4 @@ import './global.css';
 const container = document.getElementById('app');
 
 // ReactDOM.render(_que, _en-donde);
-ReactDOM.render(<Badge />, container);
+ReactDOM.render(<BadgeNew />, container);
