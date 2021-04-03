@@ -15,14 +15,14 @@ class Badge extends React.Component {
             jobTitle,
         } = this.props;
         return (
-            <main style={{height: '100%', display: 'flex', alignItems: 'center'}}>
+            <React.Fragment style={{height: '100%', display: 'flex', alignItems: 'center'}}>
                 <Card centered={true}>
                     <div className="image-header">
                         <Image src={confLogo} alt="Logo de la conferecia" centered ui={true} />
                     </div>
                     <Card.Content textAlign={'center'} style={{display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
                         <div className="Badge__section-name">
-                            <Image src={avatarUrl} size={"small"} circular alt="Avatar" wrapped ui={true} />
+                                <Image src={avatarUrl} size={"small"} circular alt="Avatar" wrapped ui={true} />
                             <h1 style={{margin: '0 10px'}}>{name} <br />{lastName}</h1>
                         </div>
                         <Card.Description>
@@ -40,7 +40,7 @@ class Badge extends React.Component {
                         <p className="Badge__footer">#PlatziConf</p>
                     </Card.Content>
                 </Card>
-            </main>
+            </React.Fragment>
         );
     };
 }
