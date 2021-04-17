@@ -1,12 +1,13 @@
 import React from 'react';
-import {Form, Header, Icon, Divider, Container} from "semantic-ui-react";
+import {Form, Header, Icon, Divider, Container, Message} from "semantic-ui-react";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 class BadgeForm extends React.Component {
 
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        // this.handleSubmit = this.handleSubmit.bind(this);
         this.fileInput =React.createRef();
     };
 
@@ -27,11 +28,11 @@ class BadgeForm extends React.Component {
         console.log('Button was Clicked');
     };
 
-    handleSubmit(e) {
-        e.preventDefault();
-        console.log('Form was Submitted');
-        console.log('file:', this.fileInput.current.files[0].name);
-    };
+    // handleSubmit(e) {
+    //     e.preventDefault();
+    //     console.log('Form was Submitted');
+    //     console.log('file:', this.fileInput.current.files[0].name);
+    // };
 
     render() {
         return (
@@ -39,9 +40,20 @@ class BadgeForm extends React.Component {
                 <Container fluid style={{ width: '80%' }}>
                     <Header as='h2' icon textAlign='center'>
                         <Icon name='user' circular />
-                        <Header.Content>New Attendant</Header.Content>
+                        <Header.Content>
+                            <BrowserRouter>
+                                <Switch>
+                                    <Route exact path='/badges/new'>
+                                        New Attendant
+                                    </Route>
+                                    <Route exact path='/badges/:badgeId/edit'>
+                                        Update Attendant
+                                    </Route>
+                                </Switch>
+                            </BrowserRouter>
+                        </Header.Content>
                     </Header>
-                    <Form size="small" error onSubmit={this.handleSubmit}>
+                    <Form size="small" error onSubmit={this.props.onSubmit}>
                         <Form.Group widths="equal">
                             <Form.Input value={this.props.formValue.firstName} required name="firstName" type="text" onChange={this.props.onChange} label="First Name" placeholder="First Name" autoComplete="name"/>
                             <Form.Input value={this.props.formValue.lastName} required name="lastName" type="text" onChange={this.props.onChange} label="Last Name" placeholder="Last Name" autoComplete="family-name"/>
@@ -53,12 +65,38 @@ class BadgeForm extends React.Component {
                         </Form.Group>
                         <Form.Group widths="equal">
                             <Form.Input value={this.props.formValue.twitter} required name="twitter" type="text" onChange={this.props.onChange} label="Twitter" placeholder="@example123"/>
-                            <input ref={this.fileInput} name="file" type="file" />
+                            {/*<input ref={this.fileInput} name="file" type="file" />*/}
                         </Form.Group>
-                        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '15px' }}>
-                            <input style={{ marginRight: '10px' }} checke   d={this.props.formValue.condition} type="checkbox" name="condition" onChange={this.props.onChange} />
-                            I accept the <strong style={{ color: '#98CA3F', margin: '0 5px' }} >  terms of service </strong> and <strong style={{ color: '#98CA3F', marginLeft: '5px' }}> privacy policy</strong></label>
-                        <Form.Button disabled={!this.props.formValue.condition} style={{backgroundColor: '#98CA3F'}} fluid onClick={this.handleClick}>Saved</Form.Button>
+                        <BrowserRouter>
+                            <Switch>
+                                <Route exact path='/badges/new'>
+                                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '15px' }}>
+                                        <input style={{ marginRight: '10px' }} checked={this.props.formValue.condition} type="checkbox" name="condition" onChange={this.props.onChange} />
+                                        I accept the <strong style={{ color: '#98CA3F', margin: '0 5px' }} >  terms of service </strong> and <strong style={{ color: '#98CA3F', marginLeft: '5px' }}> privacy policy</strong>
+                                    </label>
+                                </Route>
+                            </Switch>
+                        </BrowserRouter>
+                        {
+                            this.props.error && (
+                                <Message
+                                    error
+                                    content={this.props.error.message}
+                                />
+                            )
+                        }
+                        <Form.Button disabled={!this.props.formValue.condition} style={{backgroundColor: '#98CA3F'}} fluid onClick={this.handleClick}>
+                            <BrowserRouter>
+                                <Switch>
+                                    <Route exact path='/badges/new'>
+                                        Send
+                                    </Route>
+                                    <Route exact path='/badges/:badgeId/edit'>
+                                        Update
+                                    </Route>
+                                </Switch>
+                            </BrowserRouter>
+                        </Form.Button>
                     </Form>
                 </Container>
             </React.Fragment>

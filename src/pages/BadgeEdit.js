@@ -7,15 +7,15 @@ import BadgeForm from "../components/BadgeForm";
 
 import api from "../api";
 
-import './styles/BadgeNew.css';
+import './styles/BadgeEdit.css';
 import conf from '../images/platziconf-logo.svg';
 
-class BadgesNew extends React.Component {
+class BadgeEdit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             error: null,
-            loading: false,
+            loading: true,
             form: {
                 firstName: '',
                 lastName: '',
@@ -28,6 +28,24 @@ class BadgesNew extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
+
+    componentDidMount() {
+        this.fetchData();
+    }
+
+    async fetchData() {
+        this.setState({loading: true, error: null});
+        try {
+            const data = await api.badges.read(this.props.match.params.badgeId);
+            this.setState({loading: false, form: data});
+            alertify.set('notifier', 'position', 'top-center');
+            alertify.success('Todo Salió bien');
+        } catch (e) {
+            this.setState({loading: false, error: e});
+            alertify.set('notifier', 'position', 'top-center');
+            alertify.error(`Error: ${e.message}`);
+        }
+    }
 
     handleChange(e) {
         const target = e.target;
@@ -48,10 +66,10 @@ class BadgesNew extends React.Component {
         e.preventDefault();
         this.setState({loading: true, error: null});
         try {
-            await api.badges.create(this.state.form);
+            await api.badges.update(this.props.match.params.badgeId, this.state.form);
             this.setState({loading: false});
             alertify.set('notifier', 'position', 'top-center');
-            alertify.success('El participante se agrego correctamente');
+            alertify.success('El participante se actualizo correctamente');
             this.props.history.push('/badges');
         } catch (e) {
             this.setState({loading: false, error: e})
@@ -70,7 +88,7 @@ class BadgesNew extends React.Component {
         }
         return (
           <React.Fragment>
-              <div className="BadgeNew__hero">
+              <div className="BadgeEdit__hero">
                   <Image size="small" centered src={conf} alt="Imagen del hero"/>
               </div>
               <Segment>
@@ -100,4 +118,4 @@ class BadgesNew extends React.Component {
     }
 }
 
-export default BadgesNew;
+export default BadgeEdit;

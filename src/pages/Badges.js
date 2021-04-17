@@ -1,8 +1,11 @@
 import React from "react";
-import {Button, Image} from "semantic-ui-react";
+import {Button, Image, Loader} from "semantic-ui-react";
 import { Link } from 'react-router-dom';
 
+import api from "../api";
+
 import BadgesList from "../components/BadgesList";
+import PageError from '../components/PageError';
 
 import hero from "../images/platziconf-logo.svg";
 import './styles/Badges.css';
@@ -13,44 +16,72 @@ class Badges extends React.Component {
         console.log('1. constructor');
         super(props);
         this.state = {
-            data: [
-                {
-                    id: "2de30c42-9deb-40fc-a41f-05e62b5939a7",
-                    firstName: "Freda",
-                    lastName: "Grady",
-                    email: "Leann_Berge@gmail.com",
-                    jobTitle: "Legacy Brand Director",
-                    twitter: "FredaGrady22221-7573",
-                    avatarUrl: "https://www.gravatar.com/avatar/f63a9c45aca0e7e7de0782a6b1dff40b?d=identicon"
-                },
-                {
-                    id: "d00d3614-101a-44ca-b6c2-0be075aeed3d",
-                    firstName: "Major",
-                    lastName: "Rodriguez",
-                    email: "Ilene66@hotmail.com",
-                    jobTitle: "Human Research Architect",
-                    twitter: "ajorRodriguez61545",
-                    avatarUrl: "https://www.gravatar.com/avatar/d57a8be8cb9219609905da25d5f3e50a?d=identicon"
-                },
-                {
-                    id: "63c03386-33a2-4512-9ac1-354ad7bec5e9",
-                    firstName: "Daphney",
-                    lastName: "Torphy",
-                    email: "Ron61@hotmail.com",
-                    jobTitle: "National Markets Officer",
-                    twitter: "DaphneyTorphy96105",
-                    avatarUrl: "https://www.gravatar.com/avatar/e74e87d40e55b9ff9791c78892e55cb7?d=identicon"
-                }
-            ]
+            loading: true,
+            error: null,
+            data: undefined,
         }
+        this.fetchData = this.fetchData.bind(this);
     }
 
     componentDidMount() {
         console.log('3. componentDidMount');
+        // this.timeoutId = setTimeout(() => {
+        //     this.setState({
+        //         loading: true,
+        //         error: null,
+        //         data: undefined,
+        //     })
+        // }, 3000)
+        this.fetchData();
+        this.intervalId = setInterval(this.fetchData, 10000);
+    };
+
+    async fetchData() {
+        this.setState({loading: true, error: null});
+        try {
+            const data = await api.badges.list();
+            this.setState({loading: false, data: data});
+        } catch (e) {
+            this.setState({loading: false, error: e});
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log('5. componentDidUpdate');
+
+        console.group('Estado previo de "props" y de "state"');
+        console.log({
+            prevProps: prevProps,
+            prevState: prevState,
+        })
+        console.groupEnd();
+
+        console.group('Estado actualizado de "props" y de "state"');
+        console.log({
+            updateProps: this.props,
+            updateState: this.state,
+        })
+        console.groupEnd();
+    }
+
+    componentWillUnmount() {
+        console.log('6. componentWillUnmount');
+        clearTimeout(this.timeoutId);
+        clearInterval(this.intervalId);
     }
 
     render() {
-        console.log('2. render');
+        console.log('2/4. render');
+        if (this.state.loading && !this.state.data) {
+            return (
+                <React.Fragment>
+                    <Loader style={{marginTop: '50px'}} active inline="centered" size="massive"/>
+                </React.Fragment>
+            );
+        }
+        if (this.state.error) {
+            return <PageError error={this.state.error} />
+        }
         return(
             <React.Fragment>
                 <div className="Badges__hero">
@@ -67,7 +98,8 @@ class Badges extends React.Component {
                                     <Link style={{ color: 'white'}} to="/badges/new">New Badge</Link>
                                 </Button>
                             </div>
-                            <BadgesList badges={this.state.data} />
+                            {this.state.loading && <Loader active inline='centered' size="mini" content="Loading"/>}
+                            <BadgesList badges={this.state.data.reverse()} />
                         </div>
                     </div>
                 </div>
